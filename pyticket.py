@@ -106,13 +106,6 @@ def login():
 
     return render_template('login.html', form=form)
 
-@app.route('/test_db')
-def test_db():
-    test_user = User(username='TestUser', email='testuser@example.com', password='testpassword')
-    db.session.add(test_user)
-    db.session.commit()
-    return "Test Passed"
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
