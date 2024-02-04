@@ -4,6 +4,7 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 from flask_login import LoginManager
 from flask_login import UserMixin
 from flask_login import login_user
@@ -61,6 +62,7 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     assignee = db.Column(db.String(20), nullable=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    creator = relationship('User', foreign_keys=[creator_id])
     date = db.Column(db.DateTime, default=datetime.utcnow)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -97,7 +99,11 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        open_tickets = Ticket.query.filter_by(assignee=current_user.id).all()
+        return render_template('home.html', open_tickets=open_tickets)
+    else:
+        return render_template('home.html')
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
@@ -165,6 +171,12 @@ def create_ticket():
         return redirect(url_for('dashboard'))
 
     return render_template('create-ticket.html', form=form)
+
+@app.route('/ticket/<int:ticket_id>')
+@login_required
+def ticket_details(ticket_id):
+    ticket = Ticket.query.get_or_404(ticket_id)
+    return render_template('ticket-details.html', ticket=ticket)
 
 @app.route('/logout/')
 @login_required

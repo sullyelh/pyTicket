@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 {% block title %}pyTicket{% endblock %}
 {% block content %}
-<h1>Home</h1>
+    <h1>Home</h1>
+    {% if current_user.is_authenticated %}
+        <h2>Your Open Tickets:</h2>
+        <ul>
+            {% for ticket in open_tickets %}
+                <li><a href="{{ url_for('ticket_details', ticket_id=ticket.id) }}">{{ ticket.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Welcome to pyTicket! Please log in to view your open tickets.</p>
+    {% endif %}
 {% endblock %}

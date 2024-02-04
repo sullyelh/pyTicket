@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Ticket Details{% endblock %}
+{% block content %}
+    <h1>Ticket Details</h1>
+    <h2>{{ ticket.title }}</h2>
+    <p>{{ ticket.description }}</p>
+    <p>Assignee: {{ ticket.assignee.username }}</p>
+    <p>Creator: {{ ticket.creator.username }}</p>
+    <p>Date: {{ ticket.date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+{% endblock %}
