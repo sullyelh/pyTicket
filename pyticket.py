@@ -16,6 +16,9 @@ from wtforms import StringField
 from wtforms import PasswordField
 from wtforms import SubmitField
 from wtforms import validators
+from wtforms import TextAreaField
+from wtforms.validators import DataRequired
+from wtforms_alchemy import QuerySelectField
 from datetime import datetime
 
 app = Flask(__name__)
@@ -63,6 +66,15 @@ class LoginForm(FlaskForm):
     email = StringField('Email', [validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', [validators.DataRequired()])
     submit = SubmitField('Login')
+
+def get_users():
+    return User.query.all()
+
+class CreateTicketForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    assignee = QuerySelectField('Assignee', query_factory=get_users, get_label='username', allow_blank=False, validators=[DataRequired()])
+    submit = SubmitField('Create Ticket')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -119,6 +131,25 @@ def login():
 @login_required
 def dashboard():
     return render_template('dashboard.html', username=current_user.username, email=current_user.email)
+
+@app.route('/create-ticket/', methods=['GET', 'POST'])
+@login_required
+def create_ticket():
+    form = CreateTicketForm()
+
+    if form.validate_on_submit():
+        title = form.title.data
+        description = form.description.data
+        assignee = form.assignee.data.id  # Use user.id for assignee
+
+        new_ticket = Ticket(title=title, description=description, assignee=assignee, creator_id=current_user.id)
+        db.session.add(new_ticket)
+        db.session.commit()
+
+        flash('Ticket created successfully!', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('create-ticket.html', form=form)
 
 @app.route('/logout/')
 @login_required

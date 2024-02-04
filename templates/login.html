@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}pyTicket - Login{% endblock %}
 {% block content %}
+
 <h1>Login</h1>
 <form method="POST" action="{{ url_for('login') }}">
     {{ form.hidden_tag() }}
@@ -20,4 +21,5 @@
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
   </form>
+  
 {% endblock %}

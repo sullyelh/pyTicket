@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}pyTicket - Create a New Ticket{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h1>Create a New Ticket</h1>
+    
+    <form method="POST" action="{{ url_for('create_ticket') }}">
+      {{ form.csrf_token }}
+      
+      <div class="form-group">
+        <label for="title">Title:</label>
+        {{ form.title(class="form-control", id="title", placeholder="Enter a title for the ticket", required=true) }}
+      </div>
+  
+      <div class="form-group">
+        <label for="description">Description:</label>
+        {{ form.description(class="form-control", id="description", placeholder="Enter a description for the ticket", required=true) }}
+      </div>
+  
+      <div class="form-group">
+        <label for="assignee">Assignee:</label>
+        {{ form.assignee(class="form-control", id="assignee", placeholder="Enter the assignee for the ticket", required=true) }}
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Create Ticket</button>
+    </form>
+  </div>
+
+{% endblock %}
