@@ -2,4 +2,22 @@
 {% block title %}pyTicket - Login{% endblock %}
 {% block content %}
 <h1>Login</h1>
+<form method="POST" action="{{ url_for('login') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label for="email">Email</label>
+      {{ form.email(class="form-control", placeholder="Enter your email", required=true) }}
+      {% for error in form.email.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      {{ form.password(class="form-control", placeholder="Enter your password", required=true) }}
+      {% for error in form.password.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
 {% endblock %}

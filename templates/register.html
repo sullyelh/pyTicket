@@ -2,4 +2,45 @@
 {% block title %}pyTicket - Register{% endblock %}
 {% block content %}
 <h1>Register</h1>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endwith %}
+<form method="POST" action="{{ url_for('register') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label for="username">Username</label>
+      {{ form.username(class="form-control", placeholder="Enter your username", required=true) }}
+      {% for error in form.username.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      {{ form.email(class="form-control", placeholder="Enter your email", required=true) }}
+      {% for error in form.email.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      {{ form.password(class="form-control", placeholder="Enter your password", required=true) }}
+      {% for error in form.password.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="confirm_password">Confirm Password</label>
+      {{ form.confirm_password(class="form-control", placeholder="Confirm your password", required=true) }}
+      {% for error in form.confirm_password.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
 {% endblock %}
