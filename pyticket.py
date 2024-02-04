@@ -21,14 +21,23 @@ from wtforms.validators import DataRequired
 from wtforms_alchemy import QuerySelectField
 from datetime import datetime
 
+#init the Flask application
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_db.db'
 app.secret_key = "b'\xb2\xa6fR\x0c\x1d\xf8\xe1@\xd5\xe1\xe4\x88\xc8l\xbe'"
+
+#init SQLite db
 db = SQLAlchemy(app)
+
+#init Bcrypt for pass hash
 bcrypt = Bcrypt(app)
+
+#init LoginManager from flask_login
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+#user model for db
+#is_auth(), is_active(), is_anonymous(), and get_id() are required for flask_login
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=False, nullable=False)
@@ -47,6 +56,7 @@ class User(db.Model):
     def get_id(self):
         return str(self.id)
 
+#ticket model for db
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     assignee = db.Column(db.String(20), nullable=True)
@@ -55,6 +65,7 @@ class Ticket(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
 
+#connects to fields within register.html
 class RegistrationForm(FlaskForm):
     username = StringField('Username', [validators.DataRequired()])
     email = StringField('Email', [validators.DataRequired(), validators.Email()])
@@ -62,20 +73,24 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', [validators.DataRequired(), validators.EqualTo('password')])
     submit = SubmitField('Register')
 
+#connects to fields within login.html
 class LoginForm(FlaskForm):
     email = StringField('Email', [validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', [validators.DataRequired()])
     submit = SubmitField('Login')
 
-def get_users():
-    return User.query.all()
-
+#connects to fields within create-ticket.html
 class CreateTicketForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     assignee = QuerySelectField('Assignee', query_factory=get_users, get_label='username', allow_blank=False, validators=[DataRequired()])
     submit = SubmitField('Create Ticket')
 
+#query that returns all users, currently used for assignee field in CreateTicketForm class
+def get_users():
+    return User.query.all()
+
+#needed for flask_login
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
