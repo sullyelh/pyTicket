@@ -16,6 +16,7 @@ from wtforms import StringField
 from wtforms import PasswordField
 from wtforms import SubmitField
 from wtforms import validators
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_db.db'
@@ -42,6 +43,14 @@ class User(db.Model):
 
     def get_id(self):
         return str(self.id)
+
+class Ticket(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    assignee = db.Column(db.String(20), nullable=True)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', [validators.DataRequired()])
@@ -105,6 +114,18 @@ def login():
             flash('Login unsuccessful. Please check your email and password.', 'danger')
 
     return render_template('login.html', form=form)
+
+@app.route('/dashboard/')
+@login_required
+def dashboard():
+    return render_template('dashboard.html', username=current_user.username, email=current_user.email)
+
+@app.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('home'))
 
 if __name__ == "__main__":
     with app.app_context():
