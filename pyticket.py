@@ -79,16 +79,16 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', [validators.DataRequired()])
     submit = SubmitField('Login')
 
+#query that returns all users, currently used for assignee field in CreateTicketForm class
+def get_users():
+    return User.query.all()
+
 #connects to fields within create-ticket.html
 class CreateTicketForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     assignee = QuerySelectField('Assignee', query_factory=get_users, get_label='username', allow_blank=False, validators=[DataRequired()])
     submit = SubmitField('Create Ticket')
-
-#query that returns all users, currently used for assignee field in CreateTicketForm class
-def get_users():
-    return User.query.all()
 
 #needed for flask_login
 @login_manager.user_loader
