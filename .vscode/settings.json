@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "pyticket",
+            "database": "${workspaceFolder:pyticket}/instance/users_db.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
