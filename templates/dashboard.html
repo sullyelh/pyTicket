@@ -5,12 +5,17 @@
 <h1>Dashboard</h1>
 <p>Welcome, {{ username }}!</p>
 <p>Email: {{ email }}</p>
-<h2>Your Open Tickets:</h2>
-        <ul>
-            {% for ticket in open_tickets %}
-                <li><a href="{{ url_for('ticket_details', ticket_id=ticket.id) }}">{{ ticket.title }}</a></li>
-            {% endfor %}
-        </ul>
+<div class="card w-50">
+    <div class="card-body">
+      <h5 class="card-title">Open Tickets:</h5>
+      <ul>
+        {% for ticket in open_tickets %}
+            <li><a href="{{ url_for('ticket_details', ticket_id=ticket.id) }}">{{ ticket.title }}</a></li>
+        {% endfor %}
+    </ul>
+      <a href="{{ url_for('create_ticket') }}" class="btn btn-primary">New Ticket</a>
+    </div>
+  </div>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
     <ul class="flashes">
@@ -21,7 +26,6 @@
 {% endif %}
 {% endwith %}
 
-<a href="{{ url_for('create_ticket') }}">Create a New Ticket</a>
-
 {% endblock %}
 
+  
