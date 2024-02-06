@@ -100,11 +100,9 @@ def load_user(user_id):
 @app.route('/')
 def home():
     if current_user.is_authenticated:
-        open_tickets = Ticket.query.filter_by(assignee=current_user.id).all()
-        return render_template('home.html', open_tickets=open_tickets)
+        return render_template('home.html', username=current_user.username, email=current_user.email)
     else:
         return render_template('home.html')
-
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -151,7 +149,9 @@ def login():
 @app.route('/dashboard/')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', username=current_user.username, email=current_user.email)
+    if current_user.is_authenticated:
+        open_tickets = Ticket.query.filter_by(assignee=current_user.id).all()
+        return render_template('dashboard.html', username=current_user.username, email=current_user.email, open_tickets=open_tickets)
 
 @app.route('/create-ticket/', methods=['GET', 'POST'])
 @login_required
