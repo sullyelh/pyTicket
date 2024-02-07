@@ -10,7 +10,16 @@
       <h5 class="card-title">Open Tickets:</h5>
       <ul>
         {% for ticket in open_tickets %}
-            <li><a href="{{ url_for('ticket', ticket_id=ticket.id) }}">{{ ticket.title }}</a></li>
+            <li> <div class="card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">{{ ticket.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">Date: {{ ticket.date.strftime('%Y-%m-%d %H:%M:%S') }}</h6>
+                <p class="card-text"><a href="{{ url_for('ticket', ticket_id=ticket.id) }}">{{ ticket.title }}</a></p>
+                <p class="card-text">Assignee: {{ ticket.assignee.username }}</p>
+                <p class="card-text">Creator: {{ ticket.creator.username }}</p>
+              </div>
+            </div>
+      </li>
         {% endfor %}
     </ul>
       <a href="{{ url_for('create_ticket') }}" class="btn btn-primary">New Ticket</a>

@@ -174,7 +174,7 @@ def create_ticket():
 
 @app.route('/ticket/<int:ticket_id>')
 @login_required
-def ticket_details(ticket_id):
+def ticket(ticket_id):
     ticket = Ticket.query.get_or_404(ticket_id)
     return render_template('ticket.html', ticket=ticket)
 
