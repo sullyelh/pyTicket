@@ -176,7 +176,7 @@ def create_ticket():
 @login_required
 def ticket_details(ticket_id):
     ticket = Ticket.query.get_or_404(ticket_id)
-    return render_template('ticket-details.html', ticket=ticket)
+    return render_template('ticket.html', ticket=ticket)
 
 @app.route('/logout/')
 @login_required
